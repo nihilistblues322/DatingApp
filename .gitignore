@@ -487,5 +487,8 @@ API/dating.db-wal
 API/dating.db
 API/obj/Debug/net8.0/API.AssemblyInfo.cs
 API/obj/Debug/net8.0/API.AssemblyInfoInputs.cache
-API/obj
 
+
+API/obj/Debug/net8.0/API.csproj.AssemblyReference.cache
+API/obj/project.nuget.cache
+API/obj/Debug/net8.0/API.assets.cache
