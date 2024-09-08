@@ -55,12 +55,9 @@
                     <p>{{ member.interests }}</p>
                 </div>
             </tab>
-            <tab heading="Photos">
-                <div>
-                    <gallery [items]="images" class="gallery">
-                        
-                    </gallery>
-                </div>
+            <tab heading="Photos" #photoTab="tab">
+                @if (photoTab.active) {
+                <gallery [items]="images" class="gallery"> </gallery>}
             </tab>
             <tab heading="Messages">
                 <div>
