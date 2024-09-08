@@ -2,13 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { IUser } from '../_models/user';
 import { map } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AccountService {
     private http = inject(HttpClient);
-    baseUrl = 'http://localhost:5005/api/';
+    baseUrl = environment.apiUrl;   
     currentUser = signal<IUser | null>(null);
 
     login(model: any) {
