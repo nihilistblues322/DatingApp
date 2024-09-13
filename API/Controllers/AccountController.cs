@@ -21,7 +21,7 @@ namespace API.Controllers
 		{
 			if (await UserExists(registerDto.UserName))
 				return BadRequest("Username is taken");
-			
+
 			return Ok();
 
 			// using var hmac = new HMACSHA512();
@@ -39,19 +39,27 @@ namespace API.Controllers
 		[HttpPost("login")]
 		public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
 		{
-			var user = await context.Users.FirstOrDefaultAsync(x =>
-				x.UserName == loginDto.UserName.ToLower()
-			);
+			var user = await context
+				.Users.Include(x => x.Photos)
+				.FirstOrDefaultAsync(x => x.UserName == loginDto.UserName.ToLower());
 			if (user == null)
 				return Unauthorized("Invalid username");
+				
 			using var hmac = new HMACSHA512(user.PasswordSalt);
+			
 			var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+			
 			for (int i = 0; i < computedHash.Length; i++)
 			{
 				if (computedHash[i] != user.PasswordHash[i])
 					return Unauthorized("Invalid password");
 			}
-			return new UserDto { UserName = user.UserName, Token = tokenService.CreateToken(user) };
+			return new UserDto
+			{
+				UserName = user.UserName,
+				Token = tokenService.CreateToken(user),
+				PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
+			};
 		}
 
 		private async Task<bool> UserExists(string username)
