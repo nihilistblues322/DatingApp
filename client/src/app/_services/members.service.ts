@@ -3,6 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { IMember } from '../_models/member';
 import { of, tap } from 'rxjs';
+import { IPhoto } from '../_models/photo';
 
 @Injectable({
     providedIn: 'root',
@@ -38,4 +39,21 @@ export class MembersService {
             })
         );
     }
+
+    setMainPhoto(photo: IPhoto) {
+        return this.http
+            .put(this.baseUrl + 'users/set-main-photo/' + photo.id, {})
+            .pipe(
+                tap(() => {
+                    this.members.update((member) =>
+                        member.map((m) => {
+                            if (m.photos.includes(photo)) {
+                                m.photoUrl = photo.url;
+                            }
+                            return m;
+                        })
+                    );
+                })
+            );
+    }   
 }
