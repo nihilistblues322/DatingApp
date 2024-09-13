@@ -1,8 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { IMember } from '../_models/member';
-import { of, tap } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { IPhoto } from '../_models/photo';
 
 @Injectable({
@@ -55,5 +55,24 @@ export class MembersService {
                     );
                 })
             );
-    }   
+    }
+
+    deletePhoto(photo: IPhoto) {
+        return this.http
+            .delete(this.baseUrl + 'users/delete-photo/' + photo.id)
+            .pipe(
+                tap(() => {
+                    this.members.update((members) =>
+                        members.map((m) => {
+                            if (m.photos.includes(photo)) {
+                                m.photos = m.photos.filter(
+                                    (x) => x.id !== photo.id
+                                );
+                            }
+                            return m;
+                        })
+                    );
+                })
+            );
+    }
 }
