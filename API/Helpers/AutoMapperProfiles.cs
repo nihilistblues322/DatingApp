@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using API.DTO;
@@ -21,8 +22,12 @@ namespace API.Helpers
                 );
             CreateMap<Photo, PhotoDto>();
             CreateMap<MemberUpdateDto, AppUser>();
-            CreateMap<RegisterDto, AppUser>();
-            CreateMap<string, DateOnly>().ConvertUsing(s => DateOnly.Parse(s));
+            CreateMap<RegisterDto, AppUser>()
+                .ForMember(
+                    dest => dest.DateOfBirth,
+                    opt =>
+                        opt.MapFrom(src => DateOnly.FromDateTime(DateTime.Parse(src.DateOfBirth)))
+                );
         }
     }
 }

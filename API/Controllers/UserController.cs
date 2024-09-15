@@ -59,6 +59,8 @@ namespace API.Controllers
                 return BadRequest(result.Error.Message);
 
             var photo = new Photo { Url = result.SecureUrl.ToString(), PublicId = result.PublicId };
+            if (user.Photos.Count == 0)
+                photo.IsMain = true;
             user.Photos.Add(photo);
 
             if (await userRepository.SaveAllAsync())
